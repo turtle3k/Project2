@@ -18,31 +18,45 @@ app = Flask(__name__)
 # Database Setup
 #################################################
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/femadata.sqlite"
-db = SQLAlchemy(app)
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data/femadata.sqlite"
+# db = SQLAlchemy(app)
+engine = create_engine("sqlite:///data/femadata.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
 # reflect the tables
-Base.prepare(db.engine, reflect=True)
+# Base.prepare(db.engine, reflect=True)
+Base.prepare(engine, reflect=True)
 
 # Save references to each table
 # Samples_Metadata = Base.classes.sample_metadata
 # Samples = Base.classes.samples
 All_Events = Base.classes.all_events
-events = Base.classes.events
-nmbr_events = Base.classes.nmbr_events
-state_abbrv = Base.classes.state_abbrv
-sum_state_death = Base.classes.sum_state_death
-sum_state_event = Base.classes.sum_state_event
-sum_state_event_year = Base.classes.sum_state_event_year
+Event_Deaths = Base.classes.events_deaths
+Nmbr_Events = Base.classes.nmbr_events
+State_Abbrv = Base.classes.state_abbrv
 
 
 @app.route("/")
 def index():
+    print("This should print in the console")
     """Return the homepage."""
     return render_template("index.html")
 
+@app.route("/api/test")
+def test():
+    session = Session(engine)
+    results = session.query(Nmbr_Events.STATE, Nmbr_Events.NMBR_EVENTS).order_by(Nmbr_Events.STATE.desc()).all()
+    session.close()
+
+    all_results = []
+    for STATE, Nmbr_Events in results:
+        results_dict = {}
+        results_dict["state"] = STATE
+        results_dict["number_events"] = Nmbr_Events
+        all_results.append(results_dict)
+    
+    return jsonify(all_results)
 
 # @app.route("/names")
 # def names():
@@ -56,34 +70,26 @@ def index():
 #     return jsonify(list(df.columns)[2:])
 
 
-# @app.route("/metadata/<sample>")
-# def sample_metadata(sample):
-#     """Return the MetaData for a given sample."""
+# @app.route("/metadata/<state>")
+# def state_metadata(state):
+#     """Return the MetaData for a given state."""
 #     sel = [
-#         Samples_Metadata.sample,
-#         Samples_Metadata.ETHNICITY,
-#         Samples_Metadata.GENDER,
-#         Samples_Metadata.AGE,
-#         Samples_Metadata.LOCATION,
-#         Samples_Metadata.BBTYPE,
-#         Samples_Metadata.WFREQ,
+#         Nmbr_Events.STATE,
+#         Nmbr_Events.NMBR_EVENTS,
+#         Nmbr_Events.STATE_ABBRV,
 #     ]
 
-#     results = db.session.query(*sel).filter(Samples_Metadata.sample == sample).all()
+#     results = db.session.query(*sel).filter(Nmbr_Events.STATE == state).all()
 
 #     # Create a dictionary entry for each row of metadata information
-#     sample_metadata = {}
+#     state_metadata = {}
 #     for result in results:
-#         sample_metadata["sample"] = result[0]
-#         sample_metadata["ETHNICITY"] = result[1]
-#         sample_metadata["GENDER"] = result[2]
-#         sample_metadata["AGE"] = result[3]
-#         sample_metadata["LOCATION"] = result[4]
-#         sample_metadata["BBTYPE"] = result[5]
-#         sample_metadata["WFREQ"] = result[6]
-
-#     print(sample_metadata)
-#     return jsonify(sample_metadata)
+#         state_metadata["STATE"] = result[0]
+#         state_metadata["NMBR_EVENTS"] = result[1]
+#         state_metadata["STATE_ABBRV"] = result[2]
+        
+#     print(state_metadata)
+#     return jsonify(state_metadata)
 
 
 # @app.route("/samples/<sample>")
@@ -106,6 +112,27 @@ def index():
 #         "otu_labels": sample_data.otu_label.tolist(),
 #     }
 #     return jsonify(data)
+
+@app.route("/events/<state>")
+def events(state):
+    sel = [
+        All_Events.STATE,
+        All_Events.YEAR,
+        All_Events.EVENT_TYPE,
+        All_Events.INJURIES_DIRECT
+    ]
+
+    results = db.session.query(*sel).filter(All_Events.STATE == state).all()
+
+    state_events = {}
+    for result in results:
+        state_events["STATE"] = result[0]
+        state_events["YEAR"] = result[1]
+        state_events["EVENT_TYPE"] = result[2]
+        state_events["INJURIES_DIRECT"] = result[3]
+
+    print(state_events)
+    return jsonify(state_events)
 
 
 if __name__ == "__main__":
