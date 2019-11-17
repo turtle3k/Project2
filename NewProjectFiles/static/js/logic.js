@@ -54,8 +54,8 @@ d3.json(link, function (data) {
 var counts = []
 var events = []
 
-d3.json("/pieinfo").get(function (pieinfo){
-  pieinfo.forEach(function(item){
+d3.json("/pieinfo").get(function (pieinfo) {
+  pieinfo.forEach(function (item) {
     counts.push(item.NBR_EVENT);
     events.push(item.EVENT_TYPE)
   })
@@ -68,11 +68,11 @@ d3.json("/pieinfo").get(function (pieinfo){
   var pdata = [ptrace]
 
   var layout = {
-    title: "Spread of Natural Disasters 19xx - 20xx"
+    title: "Spread of Natural Disasters 2000 - 2018"
   }
-  
+
   Plotly.newPlot("pie", pdata, layout)
-  
+
 });
 
 //Main Line Graph
@@ -82,17 +82,17 @@ var tornado_deaths = []
 var tornado_years = []
 var wildfire_deaths = []
 var wildfire_years = []
-d3.json("/lineinfo").get(function (lineinfo){
-  lineinfo.forEach(function(item){
-    if(item.EVENT_TYPE == "Flood"){
+d3.json("/lineinfo").get(function (lineinfo) {
+  lineinfo.forEach(function (item) {
+    if (item.EVENT_TYPE == "Flood") {
       flood_deaths.push(item.DEATHS);
       flood_years.push(item.YEAR)
     }
-    else if(item.EVENT_TYPE == "Tornado"){
+    else if (item.EVENT_TYPE == "Tornado") {
       tornado_deaths.push(item.DEATHS);
       tornado_years.push(item.YEAR)
     }
-    else{
+    else {
       wildfire_deaths.push(item.DEATHS);
       wildfire_years.push(item.YEAR)
     }
@@ -120,17 +120,89 @@ d3.json("/lineinfo").get(function (lineinfo){
   Plotly.newPlot("line", linedata)
 })
 
-//State Names
 
 function buildMetadata(state) {
-  d3.json(`/events/${state}`).get((data) => {
+  d3.json(`/pieinfo?state=${state}`).get((data) => {
     var sampleData = d3.select("#sample-metadata")
     sampleData.html("")
-    Object.entries(data).forEach(([key, value]) => {
-      sampleData.append("h6").text(`${key}, ${value}`)
+    data.forEach(function (item) {
+      sampleData.append("h6").text(`${item.EVENT_TYPE}: ${item.NBR_EVENT}`)
     });
   });
 }
+
+function buildCharts(state) {
+  console.log(`IN BUILD CHARTS`)
+  var localcounts = []
+  var localevents = []
+
+  d3.json(`/pieinfo?state=${state}`).get((pieinfo) => {
+    pieinfo.forEach(function (item) {
+      localcounts.push(item.NBR_EVENT);
+      localevents.push(item.EVENT_TYPE)
+    })
+    var ptrace = {
+      values: localcounts,
+      labels: localevents,
+      textinfo: localevents,
+      type: "pie",
+    }
+    var pdata = [ptrace]
+
+    var layout = {
+      title: `Spread of Natural Disasters 2000 - 2018 in ${state}`
+    }
+
+    Plotly.newPlot("pie", pdata, layout)
+
+  });
+  //Local Line Graph
+  var local_flood_deaths = []
+  var local_flood_years = []
+  var local_tornado_deaths = []
+  var local_tornado_years = []
+  var local_wildfire_deaths = []
+  var local_wildfire_years = []
+  d3.json(`/lineinfo?state=${state}`).get(function (lineinfo) {
+    lineinfo.forEach(function (item) {
+      if (item.EVENT_TYPE == "Flood") {
+        local_flood_deaths.push(item.DEATHS);
+        local_flood_years.push(item.YEAR)
+      }
+      else if (item.EVENT_TYPE == "Tornado") {
+        local_tornado_deaths.push(item.DEATHS);
+        local_tornado_years.push(item.YEAR)
+      }
+      else {
+        local_wildfire_deaths.push(item.DEATHS);
+        local_wildfire_years.push(item.YEAR)
+      }
+    })
+    var local_floodtrace = {
+      x: local_flood_years,
+      y: local_flood_deaths,
+      type: "scatter"
+    };
+
+    var local_tornadotrace = {
+      x: local_tornado_years,
+      y: local_tornado_deaths,
+      type: "scatter"
+    };
+
+    var local_wildfiretrace = {
+      x: local_wildfire_years,
+      y: local_wildfire_deaths,
+      type: "scatter"
+    }
+
+    var local_linedata = [local_floodtrace, local_tornadotrace, local_wildfiretrace]
+
+    Plotly.newPlot("line", local_linedata)
+  })
+
+};
+
 
 function init() {
   // Grab a reference to the dropdown select element
@@ -144,17 +216,16 @@ function init() {
         .text(name.state)
         .property("value", name.state);
     });
- 
-  //   // Use the first sample from the list to build the initial plots
-    const firstState = name.state[1];
-  //   buildCharts(firstSample);
+
+    //   // Use the first sample from the list to build the initial plots
+    const firstState = stateNames[0];
     buildMetadata(firstState);
   });
 }
 
 function optionChanged(newState) {
   // Fetch new data each time a new sample is selected
-  // buildCharts(newSample);
+  buildCharts(newState);
   buildMetadata(newState);
 }
 
