@@ -100,19 +100,22 @@ d3.json("/lineinfo").get(function (lineinfo) {
   var floodtrace = {
     x: flood_years,
     y: flood_deaths,
-    type: "scatter"
+    type: "scatter",
+    name: "Flood"
   };
 
   var tornadotrace = {
     x: tornado_years,
     y: tornado_deaths,
-    type: "scatter"
+    type: "scatter",
+    name: "Tornado"
   };
 
   var wildfiretrace = {
     x: wildfire_years,
     y: wildfire_deaths,
-    type: "scatter"
+    type: "scatter",
+    name: "Wild Fire"
   }
 
   var linedata = [floodtrace, tornadotrace, wildfiretrace]
@@ -181,19 +184,22 @@ function buildCharts(state) {
     var local_floodtrace = {
       x: local_flood_years,
       y: local_flood_deaths,
-      type: "scatter"
+      type: "scatter",
+      name: "Flood"
     };
 
     var local_tornadotrace = {
       x: local_tornado_years,
       y: local_tornado_deaths,
-      type: "scatter"
+      type: "scatter",
+      name: "Tornado"
     };
 
     var local_wildfiretrace = {
       x: local_wildfire_years,
       y: local_wildfire_deaths,
-      type: "scatter"
+      type: "scatter",
+      name: "Wild Fire"
     }
 
     var local_linedata = [local_floodtrace, local_tornadotrace, local_wildfiretrace]
