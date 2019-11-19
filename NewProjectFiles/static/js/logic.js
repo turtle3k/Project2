@@ -12,13 +12,15 @@ L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 
 var link = "/../static/data/usStates.geojson";
-var totalevents = "/../static/data/nmbr_events.json";
+// var totalevents = "/../static/data/nmbr_events.json";
+var totalevents = "/api/disasters"
 // var totaleventdata = []
 
 d3.json(link, function (data) {
   d3.json(totalevents, function (nbreventdata) {
     var nbreventsmap = {};
-    nbreventdata.forEach(function (event) { nbreventsmap[event.STATE] = event.NMBR_EVENTS; });
+    // nbreventdata.forEach(function (event) { nbreventsmap[event.STATE] = event.NMBR_EVENTS; });
+    nbreventdata.forEach(function (event) { nbreventsmap[event.state] = event.number_events; });
     L.geoJson(data, {
       onEachFeature: function (feature, layer) {
         feature.properties.nbrofevents = nbreventsmap[feature.properties.name]
@@ -69,7 +71,7 @@ d3.json("/pieinfo").get(function (pieinfo) {
   var pdata = [ptrace]
 
   var layout = {
-    title: "Spread of Natural Disasters 2000 - 2018"
+    title: "Distribution of Natural Disasters<br>" + "2000 - 2018"
   }
 
   Plotly.newPlot("pie", pdata, layout)
@@ -121,7 +123,23 @@ d3.json("/lineinfo").get(function (lineinfo) {
 
   var linedata = [floodtrace, tornadotrace, wildfiretrace]
 
-  Plotly.newPlot("line", linedata)
+  var layout = {
+    title: {
+      text: 'Number of deaths by disaster type'
+    },
+    xaxis: {
+      title: {
+        text: 'Year'
+      },
+    },
+    yaxis: {
+      title: {
+        text: 'Number of deaths',
+      }
+    }
+  };
+
+  Plotly.newPlot("line", linedata, layout)
 })
 
 
@@ -154,7 +172,7 @@ function buildCharts(state) {
     var pdata = [ptrace]
 
     var layout = {
-      title: `Spread of Natural Disasters 2000 - 2018 in ${state}`
+      title: `Distribution of Natural Disasters <br>` + `2000 - 2018 in ${state}`
     }
 
     Plotly.newPlot("pie", pdata, layout)
@@ -205,7 +223,23 @@ function buildCharts(state) {
 
     var local_linedata = [local_floodtrace, local_tornadotrace, local_wildfiretrace]
 
-    Plotly.newPlot("line", local_linedata)
+    var layout = {
+      title: {
+        text: 'Number of deaths by disaster type'
+      },
+      xaxis: {
+        title: {
+          text: 'Year'
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'Number of deaths',
+        }
+      }
+    };
+
+    Plotly.newPlot("line", local_linedata, layout)
   })
 
 };
