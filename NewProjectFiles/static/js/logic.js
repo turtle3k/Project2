@@ -1,3 +1,7 @@
+// Animation - animate on scroll - https://github.com/michalsnik/aos
+AOS.init({
+  duration: 1200,
+});
 
 // Creating map object
 var map = L.map('map').setView([37.8, -96], 4);

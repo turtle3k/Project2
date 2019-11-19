@@ -17,6 +17,10 @@
   <link rel="stylesheet" type="text/css" href="/../static/css/style.css">
   <!-- d3 JavaScript -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
 </head>
 
 <body>
@@ -28,7 +32,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12" data-aos="zoom-in">
         <div id="map"></div>
       </div>
     </div>
@@ -38,25 +42,25 @@
     <div class="row">
       <div class="col-md-2"></div>
       <div class="col-md-2">
-        <div class="well">
+        <div class="well" data-aos="flip-down">
           <h5>SELECT STATE:</h5>
           <select id="selDataset" onchange="optionChanged(this.value)"></select>
         </div>
-        <div class="panel panel-primary">
+        <div class="panel panel-primary" data-aos="flip-up">
           <div class="panel-heading">
             <h3 class="panel-title">STATE DATA</h3>
           </div>
           <div id="sample-metadata" class="panel-body"></div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" data-aos="flip-left">
         <div id="pie"></div>
       </div>
       <div class="col-md-2"></div>
     </div>
     <div class="row">
       <div class="col-md-2"></div>
-      <div class="col-md-8">
+      <div class="col-md-8" data-aos="flip-right">
         <div id="line"></div>
       </div>
       <div class="col-md-2"></div>
@@ -70,7 +74,13 @@
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script type="text/javascript" src="/../static/js/config.js"></script>
   <script type="text/javascript" src="/../static/js/logic.js"></script>
- 
+
+  <!-- <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script> 
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+   -->
+  <script>
+    AOS.init();
+  </script>
 </body>
 
 </html>
