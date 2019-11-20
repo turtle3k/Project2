@@ -74,44 +74,6 @@ def disasters():
     return jsonify(all_results)
 
 
-
-# @app.route("/events/<state>")
-# def events(state):
-#     # stmt = db.session.query(Nmbr_Events).statement
-#     # df = pd.read_sql_query(stmt, db.session.bind)
-
-#     # state_data = df.loc[df[STATE] = state,] [STATE, "YEAR", "EVENT_TYPE"]]
-
-#     # state_data.sort_values(by=STATE, ascending=False, inplace=True)
-
-#     # state = {
-#     #     "state": state_data.STATE.tolist(),
-#     #     "year": state_data.YEAR.values.tolist(),
-#     #     "event_type": state_data.EVENT_TYPE.tolist(),
-#     # }
-#     # print(state)
-#     # return jsonify(state)
-
-#     sel = [
-#         All_Events.STATE,
-#         All_Events.YEAR,
-#         All_Events.EVENT_TYPE,
-#         All_Events.DEATHS_DIRECT,
-#         All_Events.DEATHS_INDIRECT
-#     ]
-
-#     results = db.session.query(*sel).filter(All_Events.STATE == state).all()
-
-#     state_events = {}
-#     for result in results:
-#         state_events["STATE"] = result[0]
-#         state_events["YEAR"] = result[1]
-#         state_events["EVENT_TYPE"] = result[2]
-#         state_events["DEATHS_DIRECT"] = result[3]
-#         state_events["DEATHS_INDIRECT"] = result[4]
-
-#     print(state_events)
-#     return jsonify(state_events)
    
 
 @app.route("/pieinfo" , methods=['GET'])
@@ -125,9 +87,7 @@ def pieinfo():
     sel = [
         All_Events.EVENT_TYPE
     ]
-    # session.query(Table.column, func.count(Table.column)).group_by(Table.column).all()
-    # ttlfloods = db.session.query(*sel, func.count(All_Events.EVENT_TYPE)).group_by(All_Events.EVENT_TYPE).all()
-
+    
     if not luState: # evaluates to true if luState is empty
         print('pieinfo: Is Empty')
         ttleventcounts = db.session.query(*sel, func.count(All_Events.EVENT_TYPE)).group_by(All_Events.EVENT_TYPE).all()
@@ -136,14 +96,7 @@ def pieinfo():
         ttleventcounts = db.session.query(*sel, func.count(All_Events.EVENT_TYPE)).filter(All_Events.STATE == luState).group_by(All_Events.EVENT_TYPE).all()
 
 
-    # ttltornados = db.session.query(*sel).filter(All_Events.EVENT_TYPE == "Tornado").all().count(All_Events.EVENT_TYPE)
-    # ttlwildfires = db.session.query(*sel).filter(All_Events.EVENT_TYPE == "Wildfire").all().count(All_Events.EVENT_TYPE)
 
-    # pieinfo = {
-        # "EVENT_TYPE": ttleventcounts[0],
-        # "tornados": ttltornados,
-        # "wildfires": ttlwildfires,
-    # }
     print(ttleventcounts)
     pieinfo = []
     for e, c in ttleventcounts:

@@ -1,3 +1,91 @@
+/**
+ * 
+ * @param {*} chartID The html chart div
+ * @param {*} state the currently selected state to build
+ */
+function buildRadarChart(chartID, state) {
+  // console.log(`Radar Chart: Passed ChartID: ${chartID}`);
+  var urlAll = '/pieinfo'
+  var urlState = `/pieinfo?state=${state}`
+  var pa_type = []; // list for pie all events (labels)
+  var pa_nbr = [];  // list of values (nbr events)
+  var ps_type = [];  //  These are for pie state values
+  var ps_nbr = [];
+
+  d3.json(urlAll).get(function (pieall) {
+    // console.log(`Pie All: ${pieall}`);
+    pieall.forEach(function (allItem) {
+      //  console.log(`Pie All Item: ${allItem}`);
+      // console.log(`Event Type: ${allItem.EVENT_TYPE}, Number: ${allItem.NBR_EVENT}`);
+      pa_type.push(allItem.EVENT_TYPE);
+      pa_nbr.push(allItem.NBR_EVENT);
+    });
+
+    d3.json(urlState).get(function (pieState) {
+      // console.log(`Pie State: ${pieState}`);
+      pieState.forEach(function (stateItem) {
+        ps_type.push(stateItem.EVENT_TYPE);
+        ps_nbr.push(stateItem.NBR_EVENT);
+      });
+
+
+      // console.log(`pa_type: ${pa_type}`)
+      // console.log(`pa_nbr: ${pa_nbr}`)
+      // console.log(`ps_nbr: ${ps_nbr}`)
+
+      // Now build the rader chart
+
+      new Chart(document.getElementById(chartID), {
+        type: 'radar',
+        data: {
+          // labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+          labels: pa_type,
+          datasets: [
+            {
+              label: "All Events",
+              fill: true,
+              backgroundColor: "rgba(179,181,198,0.2)",
+              borderColor: "rgba(179,181,198,1)",
+              pointBorderColor: "#fff",
+              pointBackgroundColor: "rgba(179,181,198,1)",
+              data: pa_nbr
+            }, {
+              label: "State Events",
+              fill: true,
+              backgroundColor: "rgba(255,99,132,0.2)",
+              borderColor: "rgba(255,99,132,1)",
+              pointBorderColor: "#fff",
+              pointBackgroundColor: "rgba(255,99,132,1)",
+              pointBorderColor: "#fff",
+              data: ps_nbr
+            }
+          ]
+        },
+        options: {
+
+          title: {
+            display: true,
+            text: 'All Events/State Events'
+          },
+          tooltips: {
+            enabled: true,
+            mode: 'single',
+            callbacks: {
+              label: function (tooltipItems, data) {
+                return tooltipItems.yLabel + ' ' + tooltipItems.xLabel;
+              }
+            }
+
+          }
+        }
+      });
+
+    });
+  });
+} // End buildRadarChart
+
+
+
 // Animation - animate on scroll - https://github.com/michalsnik/aos
 AOS.init({
   duration: 1200,
@@ -164,7 +252,7 @@ function buildMetadata(state) {
 }
 
 function buildCharts(state) {
-  console.log(`IN BUILD CHARTS`)
+  // console.log(`IN BUILD CHARTS`)
   var localcounts = []
   var localevents = []
 
@@ -251,6 +339,10 @@ function buildCharts(state) {
 
     Plotly.newPlot("line", local_linedata, layout)
   })
+
+  // Finally, now that we have a state, build the
+  // Radar Chart
+  buildRadarChart('radar-chart', state);  
 
 };
 
