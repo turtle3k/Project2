@@ -1,6 +1,6 @@
 body {
-  padding: 0;
-  margin: 0;
+  padding: 50px;
+  margin: 50px;
 }
  
 #map{
@@ -13,4 +13,8 @@ body {
 
 .jumbotron{
   background-color:teal;
+}
+
+a {
+  color: black;
 }

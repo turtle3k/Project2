@@ -17,7 +17,7 @@
   <link rel="stylesheet" type="text/css" href="/../static/css/style.css">
   <!-- d3 JavaScript -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
-
+<!-- New JavaScript library here!! -->
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
@@ -27,8 +27,9 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 jumbotron text-center">
-        <h1 class="headline"> US Natural Disasters</h1>
+        <h1 class="headline"> <a href="/"> US Natural Disasters </a></h1>
         <p>Use the interactive charts below to explore the dataset</p>
+        <p>Click on Title to view US Data</p>
       </div>
     </div>
     <div class="row">
@@ -43,8 +44,8 @@
       <div class="col-md-2"></div>
       <div class="col-md-2">
         <div class="well" data-aos="flip-down">
-          <h5>SELECT STATE:</h5>
-          <select id="selDataset" onchange="optionChanged(this.value)"></select>
+          <h5>STATE:</h5>
+          <div id="selDataset" onchange="optionChanged(this.value)"></div>
         </div>
         <div class="panel panel-primary" data-aos="flip-up">
           <div class="panel-heading">

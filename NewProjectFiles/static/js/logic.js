@@ -41,12 +41,17 @@ d3.json(link, function (data) {
           mouseout: function (event) {
             layer = event.target;
             layer.setStyle({
-              fillOpacity: 0.5
+              fillOpacity: 0.2
             });
           },
           // When a feature (neighborhood) is clicked, it is enlarged to fit the screen
           click: function (event) {
+            var nameinit = feature.properties.name
             map.fitBounds(event.target.getBounds());
+            buildCharts(nameinit);
+            buildMetadata(nameinit);
+            d3.select("#selDataset").html("");
+            d3.select("#selDataset").append("option").text(nameinit);
           }
         });
         // Giving each feature a pop-up with information pertinent to it
@@ -56,6 +61,7 @@ d3.json(link, function (data) {
 
   })
 });
+
 
 //Main Pie Chart
 var counts = []
@@ -75,7 +81,7 @@ d3.json("/pieinfo").get(function (pieinfo) {
   var pdata = [ptrace]
 
   var layout = {
-    title: "Distribution of Natural Disasters<br>" + "2000 - 2018"
+    title: "Distribution of Natural Disasters<br>" + "2000 - 2018 in USA"
   }
 
   Plotly.newPlot("pie", pdata, layout)
@@ -129,7 +135,7 @@ d3.json("/lineinfo").get(function (lineinfo) {
 
   var layout = {
     title: {
-      text: 'Number of deaths by disaster type'
+      text: 'Number of deaths by disaster type in USA'
     },
     xaxis: {
       title: {
@@ -229,7 +235,7 @@ function buildCharts(state) {
 
     var layout = {
       title: {
-        text: 'Number of deaths by disaster type'
+        text: `Number of deaths by disaster type in ${state}`
       },
       xaxis: {
         title: {
@@ -248,32 +254,4 @@ function buildCharts(state) {
 
 };
 
-
-function init() {
-  // Grab a reference to the dropdown select element
-  var selector = d3.select("#selDataset");
-
-  // Use the list of sample names to populate the select options
-  d3.json("/api/disasters").get((stateNames) => {
-    stateNames.forEach((name) => {
-      selector
-        .append("option")
-        .text(name.state)
-        .property("value", name.state);
-    });
-
-    //   // Use the first sample from the list to build the initial plots
-    const firstState = stateNames[0];
-    buildMetadata(firstState);
-  });
-}
-
-function optionChanged(newState) {
-  // Fetch new data each time a new sample is selected
-  buildCharts(newState);
-  buildMetadata(newState);
-}
-
-// Initialize the dashboard
-init();
 
