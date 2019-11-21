@@ -69,12 +69,21 @@
   </div>
   <div class="container" data-aos="flip-up">
     <div class="row">
-      <div class="col-4"></div>
-      <div class="col-4">
+      <div class="col-md-4" ><P>State 1 Drop Down</P>
+      <select id="state1_DD" onchange="radarOnChange(this.value)"></select>
+    </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4" ><P>State 2 Drop Down</P>
+        <select id="state2_DD" onchange="radarOnChange(this.value)"></select>
+      </div>
+    </div>
+    <div class="row"></div> 
+      <div class="col-md-1"></div> 
+      <div class="col-md-10">
           <!-- <P>RADAR CHART</P> -->
           <canvas id="radar-chart"></canvas>
-        </div>
-      <div class="col-4"></div>  
+        </div> 
+      <div class="col-md-1"></div>  
     </div>
   </div>
  

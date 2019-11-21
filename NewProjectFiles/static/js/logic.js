@@ -1,18 +1,124 @@
+function radarOnChange(state){
+  console.log(`In RadarOnChange: `);
+  // var x = document.getElementById("mySelect").selectedIndex;
+  // var y = document.getElementById("mySelect").options;
+  // alert("Index: " + y[x].index + " is " + y[x].text);
+
+  //var x = document.getElementById("mySelect").options.item(0).text;
+  let sel1_index = document.getElementById("state1_DD").selectedIndex;
+  let opt1 = document.getElementById("state1_DD").options;
+  let sel1State = opt1[sel1_index].text;
+
+  let sel2_index = document.getElementById("state2_DD").selectedIndex;
+  let opt2 = document.getElementById("state2_DD").options;
+  let sel2State = opt2[sel2_index].text;  
+
+  console.log(`State 1: ${sel1State}, State 2: ${sel2State}`);
+
+  //  Now call build rader
+  buildRadarChart('radar-chart', sel1State, sel2State)
+  
+}
+
+
+/**
+ * 
+ * @param {*} id id of the select you want to set value on
+ * @param {*} valueToSelect value to set as selected
+ */
+function selectElement(id, valueToSelect) {    
+    let element = document.getElementById(id);
+    element.value = valueToSelect;
+}
+
+
+function buildRadarDropDowns(selectID, state) {
+  //  Build drop Downs
+  // Grab a reference to the dropdown  state 1 select element
+  console.log("IN build DROP DOWNS")
+  var selState1 = d3.select("#state1_DD");
+
+  // Use the list of state names to populate the select options
+  //  get(function (pieall)
+  d3.json("/api/disasters").get( function (pieinfo) {
+    selState1  // First load default ALL
+    .append("option")
+    .text("ALL")
+    .property("value", "ALL");
+    
+    pieinfo.forEach((record) => {
+      selState1
+        .append("option")
+        .text(record.state)
+        .property("value", record.state);
+    });
+
+  });
+
+  // Grab a reference to the dropdown state 2 select element
+  var selState2 = d3.select("#state2_DD");
+
+  // Use the list of state names to populate the select options
+  //  get(function (pieall)
+  d3.json("/api/disasters").get( function (pieinfo) {
+    // First entry is always the ALL entry
+    selState2  // First load default ALL
+      .append("option")
+      .text("ALL")
+      .property("value", "ALL");
+
+    pieinfo.forEach((record) => {
+      selState2
+        .append("option")
+        .text(record.state)
+        .property("value", record.state);
+    });
+
+    // If param in state1 is a state, then set the 
+    // drop down to that state selected
+    selectElement('state2_DD', state)
+    
+  });
+
+
+}
+
+
 /**
  * 
  * @param {*} chartID The html chart div
  * @param {*} state the currently selected state to build
  */
-function buildRadarChart(chartID, state) {
-  // console.log(`Radar Chart: Passed ChartID: ${chartID}`);
-  var urlAll = '/pieinfo'
-  var urlState = `/pieinfo?state=${state}`
+function buildRadarChart(chartID, _state1, _state2) {
+  console.log("In BuildRadarChart");
+  console.log(`Radar Chart: St 1: ${_state1}, St2: ${_state2}`);
+  
+
+  // Handle call parameters. Test state 1 
+  if (_state1 == 'ALL'){ // Call from buildCharts
+    var url_state1 = '/pieinfo'
+  } else {
+    var url_state1 = `/pieinfo?state=${_state1}`
+  }
+
+    // Handle call parameters. Test state 2 
+    if (_state2 == 'ALL'){ // Call from buildCharts
+      var url_state2 = '/pieinfo'
+    } else {
+      var url_state2 = `/pieinfo?state=${_state2}`
+    }
+    console.log(`CK St value again: St 1: ${_state1}, St2: ${_state2}`); 
+    
+  console.log(`URL1: ${url_state1}, URL2: ${url_state2}`)
+  // var url_state2 = `/pieinfo?state=${_state2}`
+
+
   var pa_type = []; // list for pie all events (labels)
   var pa_nbr = [];  // list of values (nbr events)
   var ps_type = [];  //  These are for pie state values
   var ps_nbr = [];
 
-  d3.json(urlAll).get(function (pieall) {
+  d3.json(url_state1).get(function (pieall) {  // State 1
     // console.log(`Pie All: ${pieall}`);
     pieall.forEach(function (allItem) {
       //  console.log(`Pie All Item: ${allItem}`);
@@ -21,7 +127,7 @@ function buildRadarChart(chartID, state) {
       pa_nbr.push(allItem.NBR_EVENT);
     });
 
-    d3.json(urlState).get(function (pieState) {
+    d3.json(url_state2).get(function (pieState) {
       // console.log(`Pie State: ${pieState}`);
       pieState.forEach(function (stateItem) {
         ps_type.push(stateItem.EVENT_TYPE);
@@ -42,7 +148,7 @@ function buildRadarChart(chartID, state) {
           labels: pa_type,
           datasets: [
             {
-              label: "All Events",
+              label: `${_state1} Events`,
               fill: true,
               backgroundColor: "rgba(179,181,198,0.2)",
               borderColor: "rgba(179,181,198,1)",
@@ -50,7 +156,7 @@ function buildRadarChart(chartID, state) {
               pointBackgroundColor: "rgba(179,181,198,1)",
               data: pa_nbr
             }, {
-              label: "State Events",
+              label: `${_state2} Events`,
               fill: true,
               backgroundColor: "rgba(255,99,132,0.2)",
               borderColor: "rgba(255,99,132,1)",
@@ -342,7 +448,8 @@ function buildCharts(state) {
 
   // Finally, now that we have a state, build the
   // Radar Chart
-  buildRadarChart('radar-chart', state);  
+  buildRadarDropDowns('state2_DD', state);  // Set DD 2 to this state
+  buildRadarChart('radar-chart', 'ALL', state);  
 
 };
 
