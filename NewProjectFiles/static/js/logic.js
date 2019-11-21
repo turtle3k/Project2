@@ -1,3 +1,8 @@
+function show_dd_row(){
+  // alert("cheked the button - worked");
+  document.getElementById("dd_row").style.visibility= 'visible' ;
+}
+
 function radarOnChange(state){
   console.log(`In RadarOnChange: `);
   // var x = document.getElementById("mySelect").selectedIndex;
@@ -77,7 +82,7 @@ function buildRadarDropDowns(selectID, state) {
     // If param in state1 is a state, then set the 
     // drop down to that state selected
     selectElement('state2_DD', state)
-    
+    show_dd_row(); // Set to visibility visibible
   });
 
 

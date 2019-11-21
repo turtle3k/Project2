@@ -68,16 +68,16 @@
     </div>
   </div>
   <div class="container" data-aos="flip-up">
-    <div class="row">
+    <div class="row" id="dd_row">
       <div class="col-md-4" ><P>State 1 Drop Down</P>
-      <select id="state1_DD" onchange="radarOnChange(this.value)"></select>
+      <select id="state1_DD" onchange="radarOnChange(this.value)" visibility:hidden></select>
     </div>
       <div class="col-md-4"></div>
       <div class="col-md-4" ><P>State 2 Drop Down</P>
-        <select id="state2_DD" onchange="radarOnChange(this.value)"></select>
+        <select id="state2_DD" onchange="radarOnChange(this.value)" visibility:hidden></select>
       </div>
     </div>
-    <div class="row"></div> 
+    <div class="row" id="dd_row"></div> 
       <div class="col-md-1"></div> 
       <div class="col-md-10">
           <!-- <P>RADAR CHART</P> -->
