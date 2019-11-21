@@ -138,6 +138,18 @@ def lineinfo():
 
     # return jsonify(lineinfo)
     return jsonify(lineinfo)
+    
+@app.route("/jnb1")
+def jnb1():
+    print("This should return NOAA_Data.html")
+    """Return the homepage."""
+    return render_template("NOAA_Data.html")
+    
+@app.route("/jnb2")
+def jnb2():
+    print("This should return noaa_limited_load.html")
+    """Return the homepage."""
+    return render_template("noaa_limited_load.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
