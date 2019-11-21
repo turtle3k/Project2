@@ -1,3 +1,5 @@
+var hndl_RadarChart = '';
+
 function show_dd_row(){
   // alert("cheked the button - worked");
   document.getElementById("dd_row").style.visibility= 'visible' ;
@@ -98,6 +100,19 @@ function buildRadarChart(chartID, _state1, _state2) {
   console.log("In BuildRadarChart");
   console.log(`Radar Chart: St 1: ${_state1}, St2: ${_state2}`);
   
+  console.log(`RDR HNDL: ${hndl_RadarChart}`);
+  // Destroy it if exists:
+  //  .destroy();
+  if (typeof hndl_RadarChart === 'string'){
+    // do nothing
+    console.log(`RDR HANDLE string`)
+  } else {
+    console.log(`Trying to destroy the handle`)
+    hndl_RadarChart.destroy();
+  }
+  
+ 
+
 
   // Handle call parameters. Test state 1 
   if (_state1 == 'ALL'){ // Call from buildCharts
@@ -146,7 +161,7 @@ function buildRadarChart(chartID, _state1, _state2) {
 
       // Now build the rader chart
 
-      new Chart(document.getElementById(chartID), {
+      hndl_RadarChart = new Chart(document.getElementById(chartID), {
         type: 'radar',
         data: {
           // labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
@@ -193,6 +208,7 @@ function buildRadarChart(chartID, _state1, _state2) {
 
     });
   });
+  return hndl_RadarChart;
 } // End buildRadarChart
 
 
@@ -454,7 +470,7 @@ function buildCharts(state) {
   // Finally, now that we have a state, build the
   // Radar Chart
   buildRadarDropDowns('state2_DD', state);  // Set DD 2 to this state
-  buildRadarChart('radar-chart', 'ALL', state);  
+  hndl_RadarChart = buildRadarChart('radar-chart', 'ALL', state);  
 
 };
 
